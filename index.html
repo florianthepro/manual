@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Manual Index</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background: #f9f9f9; }
+    h1 { color: #333; }
+    #controls { display: flex; justify-content: space-between; margin-bottom: 1em; }
+    select { padding: 0.3em; }
+    ul { list-style: none; padding-left: 1em; }
+    li { margin: 0.3em 0; cursor: pointer; }
+    li:hover { text-decoration: underline; }
+    #content { background: #fff; padding: 1em; border: 1px solid #ccc; }
+  </style>
+  <!-- Markdown Renderer (marked.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <h1>📚 Manual Index</h1>
+  <div id="controls">
+    <div>Wähle Thema & Kategorie:</div>
+    <div>
+      Sprache:
+      <select id="langSelect">
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="index">⏳ Lade Struktur…</div>
+  <hr>
+  <div id="content">👉 Bitte eine Anleitung auswählen…</div>
+
+  <script>
+    const repoOwner = "florianthepro";
+    const repoName = "manual";
+    const branch = "main";
+    const baseRaw = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+
+    let manuals = {};
+    let currentLang = "de";
+
+    async function fetchTree() {
+      const url = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`;
+      const res = await fetch(url);
+      return res.json();
+    }
+
+    function buildStructure(files) {
+      manuals = {};
+      files.forEach(file => {
+        if (file.path.startsWith("manual/") && file.path.endsWith(".md")) {
+          const parts = file.path.split("/");
+          if (parts.length === 4) {
+            const [_, thema, kategorie, spracheFile] = parts;
+            const sprache = spracheFile.replace(".md", "");
+            manuals[thema] = manuals[thema] || {};
+            manuals[thema][kategorie] = manuals[thema][kategorie] || {};
+            manuals[thema][kategorie][sprache] = file.path;
+          }
+        }
+      });
+    }
+
+    function renderIndex() {
+      const container = document.getElementById("index");
+      container.innerHTML = "";
+      const ul = document.createElement("ul");
+
+      for (const thema in manuals) {
+        const themaLi = document.createElement("li");
+        themaLi.textContent = `🔹 ${thema}`;
+        const catUl = document.createElement("ul");
+
+        for (const kategorie in manuals[thema]) {
+          const catLi = document.createElement("li");
+          catLi.textContent = `📂 ${kategorie}`;
+          catLi.onclick = () => loadManual(thema, kategorie, currentLang);
+          catUl.appendChild(catLi);
+        }
+
+        themaLi.appendChild(catUl);
+        ul.appendChild(themaLi);
+      }
+
+      container.appendChild(ul);
+    }
+
+    async function loadManual(thema, kategorie, lang) {
+      const path = manuals[thema][kategorie][lang];
+      if (!path) {
+        document.getElementById("content").innerHTML = `❌ Keine Anleitung für Sprache "${lang}" verfügbar.`;
+        return;
+      }
+      const url = baseRaw + path;
+      const res = await fetch(url);
+      const text = await res.text();
+      document.getElementById("content").innerHTML = marked.parse(text);
+    }
+
+    document.getElementById("langSelect").addEventListener("change", e => {
+      currentLang = e.target.value;
+    });
+
+    fetchTree().then(data => {
+      buildStructure(data.tree);
+      renderIndex();
+    });
+  </script>
+</body>
+</html>
 
