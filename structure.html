@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Structure Editor</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    .thema, .kategorie, .lang { margin: 5px 0; }
+    button { margin-left: 5px; }
+    textarea { width: 100%; height: 200px; }
+  </style>
+</head>
+<body>
+  <h1>Structure.json Editor</h1>
+  <div id="editor"></div>
+  <button onclick="addThema()">+ Thema hinzufügen</button>
+  <hr>
+  <button onclick="generateJSON()">JSON generieren</button>
+  <button onclick="copyJSON()">JSON kopieren</button>
+  <textarea id="output" readonly></textarea>
+
+<script>
+let structure = {};
+
+function render() {
+  const editor = document.getElementById("editor");
+  editor.innerHTML = "";
+  Object.entries(structure).forEach(([thema, cats]) => {
+    const themaDiv = document.createElement("div");
+    themaDiv.className = "block";
+    themaDiv.innerHTML = `<strong>Thema:</strong> 
+      <input value="${thema}" onchange="renameThema('${thema}', this.value)"> 
+      <button onclick="removeThema('${thema}')">Entfernen</button>
+      <button onclick="addKategorie('${thema}')">+ Kategorie</button>`;
+    Object.entries(cats).forEach(([cat, langs]) => {
+      const catDiv = document.createElement("div");
+      catDiv.className = "kategorie";
+      catDiv.innerHTML = `Kategorie: 
+        <input value="${cat}" onchange="renameKategorie('${thema}','${cat}',this.value)">
+        <button onclick="removeKategorie('${thema}','${cat}')">Entfernen</button>
+        <button onclick="addLang('${thema}','${cat}')">+ Sprache</button>`;
+      Object.entries(langs).forEach(([lang, path]) => {
+        const langDiv = document.createElement("div");
+        langDiv.className = "lang";
+        langDiv.innerHTML = `Sprache: 
+          <input value="${lang}" onchange="renameLang('${thema}','${cat}','${lang}',this.value)">
+          Pfad: <input value="${path}" onchange="updatePath('${thema}','${cat}','${lang}',this.value)">
+          <button onclick="removeLang('${thema}','${cat}','${lang}')">Entfernen</button>`;
+        catDiv.appendChild(langDiv);
+      });
+      themaDiv.appendChild(catDiv);
+    });
+    editor.appendChild(themaDiv);
+  });
+}
+
+function addThema() {
+  const name = prompt("Neues Thema:");
+  if (!name) return;
+  structure[name] = {};
+  render();
+}
+function removeThema(thema) { delete structure[thema]; render(); }
+function renameThema(oldName,newName) {
+  if (!newName) return;
+  structure[newName] = structure[oldName];
+  delete structure[oldName];
+  render();
+}
+
+function addKategorie(thema) {
+  const name = prompt("Neue Kategorie:");
+  if (!name) return;
+  structure[thema][name] = {};
+  render();
+}
+function removeKategorie(thema,cat) { delete structure[thema][cat]; render(); }
+function renameKategorie(thema,oldCat,newCat) {
+  if (!newCat) return;
+  structure[thema][newCat] = structure[thema][oldCat];
+  delete structure[thema][oldCat];
+  render();
+}
+
+function addLang(thema,cat) {
+  const lang = prompt("Sprachkürzel:");
+  const path = prompt("Pfad:");
+  if (!lang || !path) return;
+  structure[thema][cat][lang] = path;
+  render();
+}
+function removeLang(thema,cat,lang) { delete structure[thema][cat][lang]; render(); }
+function renameLang(thema,cat,oldLang,newLang) {
+  if (!newLang) return;
+  structure[thema][cat][newLang] = structure[thema][cat][oldLang];
+  delete structure[thema][cat][oldLang];
+  render();
+}
+function updatePath(thema,cat,lang,newPath) { structure[thema][cat][lang] = newPath; }
+
+function generateJSON() {
+  document.getElementById("output").value = JSON.stringify(structure,null,2);
+}
+function copyJSON() {
+  const text = document.getElementById("output").value;
+  navigator.clipboard.writeText(text).then(()=>alert("JSON kopiert!"));
+}
+
+// Beispielinitialisierung
+structure = {
+  "thema1": {
+    "kategorieA": { "de":"manual/thema1/kategorieA/de.md" }
+  }
+};
+render();
+</script>
+</body>
+</html>
