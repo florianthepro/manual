@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manual</title>
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --border:#ddd; --bg:#fafafa; --accent:#2563eb;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, sans-serif; display:flex; min-height:100vh; }
+    header { position:sticky; top:0; background:#fff; border-bottom:1px solid var(--border); padding:8px 12px; display:flex; justify-content:flex-end; z-index:10; }
+    #langSelect { padding:6px 8px; }
+    #sidebar { width:320px; border-right:1px solid var(--border); background:var(--bg); overflow:auto; }
+    #toc { padding:12px; }
+    .thema { margin-bottom:10px; }
+    .thema-title { font-weight:600; margin:8px 0; }
+    .cat-list { list-style:none; margin:0; padding:0; }
+    .cat-item { margin:4px 0; }
+    .cat-button {
+      width:100%; text-align:left; padding:8px; border:1px solid transparent; background:transparent; cursor:pointer;
+    }
+    .cat-button:hover { border-color:var(--border); background:#fff; }
+    .cat-button.active { border-color:var(--accent); background:#eef2ff; }
+    #content { flex:1; padding:16px 20px; overflow:auto; }
+    #status { color:#b91c1c; padding:8px 0 0; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <header>
+      <select id="langSelect" aria-label="Sprache"></select>
+    </header>
+    <div id="toc"></div>
+  </div>
+
+  <main id="content">
+    <h1>Manual</h1>
+    <p>Bitte links eine Kategorie wählen.</p>
+    <div id="status" class="hidden"></div>
+  </main>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
