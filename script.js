@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const res = await fetch("structure.json");
+  const res = await fetch("https://github.com/florianthepro/rnanual/blob/main/structure.json");
   const structure = await res.json();
 
   const langSelect = document.getElementById("langSelect");
