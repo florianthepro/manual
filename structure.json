@@ -1,0 +1,19 @@
+{
+  "thema1": {
+    "kategorieA": {
+      "de": "manual/thema1/kategorieA/de.md",
+      "en": "manual/thema1/kategorieA/en.md",
+      "cmn": "manual/thema1/kategorieA/cmn.md"
+    },
+    "kategorieB": {
+      "de": "manual/thema1/kategorieB/de.md",
+      "en": "manual/thema1/kategorieB/en.md"
+    }
+  },
+  "thema2": {
+    "kategorieC": {
+      "de": "manual/thema2/kategorieC/de.md",
+      "en": "manual/thema2/kategorieC/en.md"
+    }
+  }
+}
