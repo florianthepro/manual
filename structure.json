@@ -1,9 +1,7 @@
 {
   "thema1": {
-    "kategorieA": {
-      "de": "manual/thema1/kategorieA/de.md",
-      "en": "manual/thema1/kategorieA/en.md",
-      "cmn": "manual/thema1/kategorieA/cmn.md"
+    "bsfisi": {
+      "de": "manual/thema1/kategorieA/de.md"
     },
     "kategorieB": {
       "de": "manual/thema1/kategorieB/de.md",
