@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const STRUCTURE_URL = "https://github.com/florianthepro/rnanual/blob/main/structure.json";
+  const STRUCTURE_URL = "https://raw.githubusercontent.com/florianthepro/rnanual/main/structure.json";
   const res = await fetch(STRUCTURE_URL);
   const structure = await res.json();
 
