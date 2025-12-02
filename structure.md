@@ -12,5 +12,5 @@ Kategorie:
 
 Pfad:
 ```
-https://github.com/florianthepro/bsfisi/blob/pages/readme/2025-11-24.md
+https://raw.githubusercontent.com/florianthepro/rnanual/refs/heads/main/bsfisi/24.11.2025/2025-11-24.md
 ```
